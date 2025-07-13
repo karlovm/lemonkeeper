@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LemonKeeper - Безопасный обмен файлами</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-black: #0a0a0a;
+            --secondary-black: #1a1a1a;
+            --card-black: #2a2a2a;
+            --hover-black: #3a3a3a;
+            --primary-yellow: #ffd700;
+            --secondary-yellow: #ffed4a;
+            --dark-yellow: #b8860b;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #888888;
+            --border-color: #404040;
+            --success-color: #22c55e;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--primary-black);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--secondary-black) 0%, var(--card-black) 100%);
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-black);
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .language-switcher {
+            display: flex;
+            background: var(--card-black);
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .lang-btn.active {
+            background: var(--primary-yellow);
+            color: var(--primary-black);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: var(--hover-black);
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        .section {
+            background: var(--card-black);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .section:hover {
+            border-color: var(--primary-yellow);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--primary-yellow);
+        }
+
+        .section h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        input[type="password"], [type="text"], input[type="file"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--secondary-black);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="password"]:focus, input[type="file"]:focus {
+            outline: none;
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        input[type="file"] {
+            padding: 0.5rem;
+        }
+
+        .btn {
+            background: var(--primary-yellow);
+            color: var(--primary-black);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--secondary-yellow);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--secondary-black);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--hover-black);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .file-list {
+            background: var(--secondary-black);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s ease;
+        }
+
+        .file-item:hover {
+            background-color: var(--hover-black);
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .file-details {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .status {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            border: 1px solid;
+        }
+
+        .status.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border-color: var(--error-color);
+        }
+
+        .progress {
+            width: 100%;
+            height: 8px;
+            background: var(--secondary-black);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-yellow), var(--secondary-yellow));
+            transition: width 0.3s ease;
+        }
+
+        .encryption-info {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--dark-yellow);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .encryption-info h3 {
+            color: var(--primary-yellow);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .encryption-info p {
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+
+        .disk-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--info-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .disk-info h3 {
+            color: var(--info-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .disk-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .disk-stat {
+            background: var(--secondary-black);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .disk-stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .disk-stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .disk-usage-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--secondary-black);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .disk-usage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), var(--warning-color), var(--error-color));
+            transition: width 0.5s ease;
+        }
+
+        .disk-usage-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .file-actions {
+                justify-content: center;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .disk-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🍋</div>
+                <div class="logo-text">LemonKeeper</div>
+            </div>
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="ru">Русский</button>
+                <button class="lang-btn" data-lang="en">English</button>
+            </div>
+        </div>
+        <div class="subtitle" data-i18n="subtitle">Шифрование на стороне клиента с использованием AES-256</div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="container">
+        <div class="section">
+            <div class="section-header">
+                <svg class="section-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,17A1.5,1.5 0 0,0 13.5,15.5A1.5,1.5 0 0,0 12,14A1.5,1.5 0 0,0 10.5,15.5A1.5,1.5 0 0,0 12,17M12,10.5C12.8,10.5 13.5,9.8 13.5,9V7.5C13.5,6.7 12.8,6 12,6C11.2,6 10.5,6.7 10.5,7.5V9C10.5,9.8 11.2,10.5 12,10.5M12,12C12.8,12 13.5,12.7 13.5,13.5C13.5,14.3 12.8,15 12,15C11.2,15 10.5,14.3 10.5,13.5C10.5,12.7 11.2,12 12,12Z" />
+                </svg>
+                <h2 data-i18n="disk_info_title">Информация о диске</h2>
+            </div>
+
+            <div class="disk-info">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z" />
+                    </svg>
+                    <span data-i18n="disk_usage">Использование диска</span>
+                </h3>
+
+                <div class="disk-stats">
+                    <div class="disk-stat">
+                        <div class="disk-stat-value" id="totalSpace">-</div>
+                        <div class="disk-stat-label" data-i18n="total_space">Общий объем</div>
+                    </div>
+                    <div class="disk-stat">
+                        <div class="disk-stat-value" id="freeSpace">-</div>
+                        <div class="disk-stat-label" data-i18n="free_space">Свободно</div>
+                    </div>
+                    <div class="disk-stat">
+                        <div class="disk-stat-value" id="usedSpace">-</div>
+                        <div class="disk-stat-label" data-i18n="used_space">Использовано</div>
+                    </div>
+                    <div class="disk-stat">
+                        <div class="disk-stat-value" id="uploadedSize">-</div>
+                        <div class="disk-stat-label" data-i18n="uploaded_files">Загруженные файлы</div>
+                    </div>
+                </div>
+
+                <div class="disk-usage-bar">
+                    <div class="disk-usage-fill" id="diskUsageFill"></div>
+                </div>
+                <div class="disk-usage-text" id="diskUsageText">-</div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="loadDiskInfo()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" />
+                </svg>
+                <span data-i18n="refresh_disk_info">Обновить информацию</span>
+            </button>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <svg class="section-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                </svg>
+                <h2 data-i18n="upload_title">Загрузка файла</h2>
+            </div>
+
+            <div class="encryption-info">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11,9H13V7A1,1 0 0,0 12,6A1,1 0 0,0 11,7V9M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16,12A1,1 0 0,1 15,13H14V16A1,1 0 0,1 13,17H11A1,1 0 0,1 10,16V13H9A1,1 0 0,1 8,12V11A1,1 0 0,1 9,10H10V9A2,2 0 0,1 12,7A2,2 0 0,1 14,9V10H15A1,1 0 0,1 16,11V12Z" />
+                    </svg>
+                    <span data-i18n="encryption_info">Информация о шифровании</span>
+                </h3>
+                <p data-i18n="encryption_point1">• Файлы шифруются на стороне браузера перед отправкой</p>
+                <p data-i18n="encryption_point2">• Используется алгоритм AES-256 в режиме GCM</p>
+                <p data-i18n="encryption_point3">• Сервер никогда не получает незашифрованные данные</p>
+                <p data-i18n="encryption_point4">• Пароль не передается на сервер</p>
+            </div>
+
+            <div class="form-group">
+                <label for="uploadPassword" data-i18n="upload_password_label">Пароль для шифрования:</label>
+                <input type="text" id="uploadPassword" data-i18n-placeholder="upload_password_placeholder" placeholder="Введите надежный пароль">
+            </div>
+
+            <div class="form-group">
+                <label for="customFileName" data-i18n="custom_file_name_label">Имя файла при загрузке:</label>
+                <input type="text" id="customFileName" placeholder="example.txt">
+            </div>
+
+
+            <div class="form-group">
+                <label for="fileInput" data-i18n="file_input_label">Выберите файл:</label>
+                <input type="file" id="fileInput">
+            </div>
+
+            <button class="btn" id="uploadBtn" onclick="uploadFile()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z" />
+                </svg>
+                <span data-i18n="upload_button">Зашифровать и загрузить</span>
+            </button>
+
+            <div id="uploadProgress" class="progress" style="display: none;">
+                <div class="progress-bar" id="uploadProgressBar"></div>
+            </div>
+
+            <div id="uploadStatus"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <svg class="section-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+                </svg>
+                <h2 data-i18n="files_title">Файлы на сервере</h2>
+            </div>
+
+            <button class="btn btn-secondary" onclick="loadFileList()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" />
+                </svg>
+                <span data-i18n="refresh_button">Обновить список</span>
+            </button>
+
+            <div id="fileList" class="file-list"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <svg class="section-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" />
+                </svg>
+                <h2 data-i18n="decrypt_title">Расшифровка файла</h2>
+            </div>
+
+            <div class="form-group">
+                <label for="decryptPassword" data-i18n="decrypt_password_label">Пароль для расшифровки:</label>
+                <input type="password" id="decryptPassword" data-i18n-placeholder="decrypt_password_placeholder" placeholder="Введите пароль">
+            </div>
+
+            <div id="decryptProgress" class="progress" style="display: none;">
+                <div class="progress-bar" id="decryptProgressBar"></div>
+            </div>
+
+            <div id="decryptStatus"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = 'http:///localhost:8083/files';
+    let userApiToken = localStorage.getItem('lemonkeeper_token');
+
+    if (!userApiToken) {
+        userApiToken = prompt("Enter your access token:");
+        if (userApiToken) {
+            localStorage.setItem('lemonkeeper_token', userApiToken);
+        } else {
+            alert("Token is required.");
+            throw new Error("Token is missing.");
+        }
+    }
+
+    // Internationalization
+    const translations = {
+        ru: {
+            subtitle: 'Шифрование на стороне клиента с использованием AES-256',
+            upload_title: 'Загрузка файла',
+            encryption_info: 'Информация о шифровании',
+            encryption_point1: '• Файлы шифруются на стороне браузера перед отправкой',
+            encryption_point2: '• Используется алгоритм AES-256 в режиме GCM',
+            encryption_point3: '• Сервер никогда не получает незашифрованные данные',
+            encryption_point4: '• Пароль не передается на сервер',
+            upload_password_label: 'Пароль для шифрования:',
+            upload_password_placeholder: 'Введите надежный пароль',
+            file_input_label: 'Выберите файл:',
+            upload_button: 'Зашифровать и загрузить',
+            files_title: 'Файлы на сервере',
+            refresh_button: 'Обновить список',
+            decrypt_title: 'Расшифровка файла',
+            decrypt_password_label: 'Пароль для расшифровки:',
+            decrypt_password_placeholder: 'Введите пароль',
+            download_button: 'Скачать и расшифровать',
+            delete_button: 'Удалить',
+            no_files: 'Нет загруженных файлов',
+            size_label: 'Размер',
+            date_label: 'Дата',
+            encrypting: 'Шифрование...',
+            uploading: 'Загрузка...',
+            file_uploaded: 'Файл успешно зашифрован и загружен!',
+            file_decrypted: 'Файл успешно расшифрован и скачан!',
+            file_deleted: 'Файл успешно удален!',
+            enter_password: 'Введите пароль для шифрования',
+            select_file: 'Выберите файл для загрузки',
+            enter_decrypt_password: 'Введите пароль для расшифровки',
+            confirm_delete: 'Вы уверены, что хотите удалить этот файл?',
+            encryption_error: 'Ошибка шифрования: ',
+            decryption_error: 'Ошибка расшифровки: ',
+            upload_error: 'Ошибка загрузки файла',
+            delete_error: 'Ошибка удаления файла',
+            file_not_found: 'Файл не найден',
+            custom_file_name_label: 'Имя файла при загрузке:',
+
+            invalid_password: 'Неверный пароль или поврежденный файл'
+        },
+        en: {
+            subtitle: 'Client-side encryption using AES-256',
+            upload_title: 'File Upload',
+            encryption_info: 'Encryption Information',
+            encryption_point1: '• Files are encrypted in the browser before sending',
+            encryption_point2: '• Uses AES-256 algorithm in GCM mode',
+            encryption_point3: '• Server never receives unencrypted data',
+            encryption_point4: '• Password is not sent to the server',
+            upload_password_label: 'Encryption password:',
+            upload_password_placeholder: 'Enter a strong password',
+            file_input_label: 'Select file:',
+            upload_button: 'Encrypt and Upload',
+            files_title: 'Files on Server',
+            refresh_button: 'Refresh List',
+            decrypt_title: 'File Decryption',
+            decrypt_password_label: 'Decryption password:',
+            decrypt_password_placeholder: 'Enter password',
+            download_button: 'Download and Decrypt',
+            delete_button: 'Delete',
+            no_files: 'No uploaded files',
+            size_label: 'Size',
+            date_label: 'Date',
+            encrypting: 'Encrypting...',
+            uploading: 'Uploading...',
+            file_uploaded: 'File successfully encrypted and uploaded!',
+            file_decrypted: 'File successfully decrypted and downloaded!',
+            file_deleted: 'File successfully deleted!',
+            enter_password: 'Enter encryption password',
+            select_file: 'Select file to upload',
+            enter_decrypt_password: 'Enter decryption password',
+            confirm_delete: 'Are you sure you want to delete this file?',
+            encryption_error: 'Encryption error: ',
+            decryption_error: 'Decryption error: ',
+            upload_error: 'File upload error',
+            delete_error: 'File deletion error',
+            file_not_found: 'File not found',
+            custom_file_name_label: 'Upload file name:',
+
+            invalid_password: 'Invalid password or corrupted file'
+        }
+    };
+
+    let currentLanguage = localStorage.getItem('lemonkeeper_language') || 'ru';
+    // Load disk info on page load and after file operations
+    window.addEventListener('load', () => {
+        loadFileList();
+        loadDiskInfo();
+    });
+
+    async function loadDiskInfo() {
+        try {
+            const response = await fetch(`${API_BASE}/disk-info`,{
+                headers: {
+                    'X-API-Token': userApiToken
+                }
+            });
+            const diskInfo = await response.json();
+
+            if (response.ok && !diskInfo.error) {
+                // Update total space
+                document.getElementById('totalSpace').textContent = formatFileSize(diskInfo.totalSpace);
+
+                // Update free space
+                document.getElementById('freeSpace').textContent = formatFileSize(diskInfo.freeSpace);
+
+                // Update used space
+                document.getElementById('usedSpace').textContent = formatFileSize(diskInfo.usedSpace);
+
+                // Update uploaded files size
+                document.getElementById('uploadedSize').textContent = formatFileSize(diskInfo.uploadedFilesSize);
+
+                // Update usage bar
+                const usagePercentage = diskInfo.usagePercentage || 0;
+                const diskUsageFill = document.getElementById('diskUsageFill');
+                diskUsageFill.style.width = Math.min(usagePercentage, 100) + '%';
+
+                // Update usage text
+                const usageText = `${usagePercentage.toFixed(1)}% ${currentLanguage === 'ru' ? 'использовано' : 'used'}`;
+                document.getElementById('diskUsageText').textContent = usageText;
+
+                // Change color based on usage
+                if (usagePercentage > 90) {
+                    diskUsageFill.style.background = 'var(--error-color)';
+                } else if (usagePercentage > 70) {
+                    diskUsageFill.style.background = 'linear-gradient(90deg, var(--warning-color), var(--error-color))';
+                } else {
+                    diskUsageFill.style.background = 'linear-gradient(90deg, var(--success-color), var(--warning-color))';
+                }
+
+            } else {
+                console.error('Error loading disk info:', diskInfo.error);
+                // Show error state
+                document.getElementById('totalSpace').textContent = '-';
+                document.getElementById('freeSpace').textContent = '-';
+                document.getElementById('usedSpace').textContent = '-';
+                document.getElementById('uploadedSize').textContent = '-';
+                document.getElementById('diskUsageText').textContent = diskInfo.error || 'Ошибка загрузки';
+            }
+
+        } catch (error) {
+            console.error('Error fetching disk info:', error);
+            // Show error state
+            document.getElementById('totalSpace').textContent = '-';
+            document.getElementById('freeSpace').textContent = '-';
+            document.getElementById('usedSpace').textContent = '-';
+            document.getElementById('uploadedSize').textContent = '-';
+            document.getElementById('diskUsageText').textContent = currentLanguage === 'ru' ? 'Ошибка загрузки' : 'Loading error';
+        }
+    }
+    function updateLanguage(lang) {
+        currentLanguage = lang;
+        localStorage.setItem('lemonkeeper_language', lang);
+
+        // Update document language
+        document.documentElement.lang = lang;
+
+        // Update title
+        document.title = lang === 'ru' ? 'LemonKeeper - Безопасный обмен файлами' : 'LemonKeeper - Secure File Sharing';
+
+        // Update language buttons
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+
+        // Update all translatable elements
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            if (translations[lang][key]) {
+                element.textContent = translations[lang][key];
+            }
+        });
+
+        // Update placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+            const key = element.getAttribute('data-i18n-placeholder');
+            if (translations[lang][key]) {
+                element.placeholder = translations[lang][key];
+            }
+        });
+    }
+
+    // Initialize language
+    updateLanguage(currentLanguage);
+
+    // Language switcher event listeners
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            updateLanguage(btn.dataset.lang);
+        });
+    });
+
+    // Utility functions for encryption/decryption
+    async function generateKey(password, salt) {
+        const encoder = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey(
+            'raw',
+            encoder.encode(password),
+            { name: 'PBKDF2' },
+            false,
+            ['deriveBits', 'deriveKey']
+        );
+
+        return await crypto.subtle.deriveKey(
+            {
+                name: 'PBKDF2',
+                salt: salt,
+                iterations: 100000,
+                hash: 'SHA-256'
+            },
+            keyMaterial,
+            { name: 'AES-GCM', length: 256 },
+            true,
+            ['encrypt', 'decrypt']
+        );
+    }
+
+    async function encryptFile(file, password) {
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+
+        const key = await generateKey(password, salt);
+        const fileBuffer = await file.arrayBuffer();
+
+        const encrypted = await crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv: iv },
+            key,
+            fileBuffer
+        );
+
+        // Combine salt, iv, and encrypted data
+        const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+        result.set(salt, 0);
+        result.set(iv, salt.length);
+        result.set(new Uint8Array(encrypted), salt.length + iv.length);
+
+        return result;
+    }
+
+    async function decryptFile(encryptedBuffer, password) {
+        const salt = encryptedBuffer.slice(0, 16);
+        const iv = encryptedBuffer.slice(16, 28);
+        const encrypted = encryptedBuffer.slice(28);
+
+        const key = await generateKey(password, salt);
+
+        try {
+            const decrypted = await crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                encrypted
+            );
+            return decrypted;
+        } catch (error) {
+            throw new Error(translations[currentLanguage].invalid_password);
+        }
+    }
+
+    function showStatus(elementId, message, isError = false) {
+        const statusEl = document.getElementById(elementId);
+        statusEl.innerHTML = `<div class="status ${isError ? 'error' : 'success'}">${message}</div>`;
+        setTimeout(() => statusEl.innerHTML = '', 5000);
+    }
+
+    function showProgress(progressId, barId, show = true) {
+        document.getElementById(progressId).style.display = show ? 'block' : 'none';
+        if (show) {
+            document.getElementById(barId).style.width = '0%';
+        }
+    }
+
+    function updateProgress(barId, percent) {
+        document.getElementById(barId).style.width = percent + '%';
+    }
+
+
+
+    async function uploadFile() {
+        const password = document.getElementById('uploadPassword').value;
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+
+        if (!password) {
+            showStatus('uploadStatus', translations[currentLanguage].enter_password, true);
+            return;
+        }
+
+        if (!file) {
+            showStatus('uploadStatus', translations[currentLanguage].select_file, true);
+            return;
+        }
+
+        const uploadBtn = document.getElementById('uploadBtn');
+        uploadBtn.disabled = true;
+        uploadBtn.querySelector('span').textContent = translations[currentLanguage].encrypting;
+
+        try {
+            showProgress('uploadProgress', 'uploadProgressBar');
+            updateProgress('uploadProgressBar', 25);
+
+            const encryptedData = await encryptFile(file, password);
+            updateProgress('uploadProgressBar', 50);
+
+            const formData = new FormData();
+            const encryptedFile = new Blob([encryptedData], { type: 'application/octet-stream' });
+
+            const customFileNameInput = document.getElementById('customFileName');
+            const customFileName = customFileNameInput.value.trim();
+            const originalExtension = file.name.includes('.') ? file.name.substring(file.name.lastIndexOf('.')) : '';
+            const finalFileName = customFileName ? customFileName + originalExtension : file.name;
+
+            formData.append('file', encryptedFile, finalFileName + '.encrypted');
+
+
+            uploadBtn.querySelector('span').textContent = translations[currentLanguage].uploading;
+            updateProgress('uploadProgressBar', 75);
+
+            const response = await fetch(`${API_BASE}/upload`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-API-Token': userApiToken
+                }
+            });
+
+            const result = await response.json();
+            updateProgress('uploadProgressBar', 100);
+
+            if (response.ok) {
+                showStatus('uploadStatus', translations[currentLanguage].file_uploaded);
+                document.getElementById('uploadPassword').value = '';
+                fileInput.value = '';
+                loadFileList();
+            } else {
+                showStatus('uploadStatus', result.message || translations[currentLanguage].upload_error, true);
+            }
+
+        } catch (error) {
+            showStatus('uploadStatus', translations[currentLanguage].encryption_error + error.message, true);
+        } finally {
+            uploadBtn.disabled = false;
+            uploadBtn.querySelector('span').textContent = translations[currentLanguage].upload_button;
+            setTimeout(() => showProgress('uploadProgress', 'uploadProgressBar', false), 1000);
+        }
+    }
+
+    async function loadFileList() {
+        try {
+            const response = await fetch(`${API_BASE}/list`, {
+                headers: {
+                    'X-API-Token': userApiToken
+                }
+            });
+            const files = await response.json();
+
+            const fileListEl = document.getElementById('fileList');
+
+            if (files.length === 0) {
+                fileListEl.innerHTML = `
+                        <div class="empty-state">
+                            <svg class="empty-state-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+                            </svg>
+                            <p>${translations[currentLanguage].no_files}</p>
+                        </div>
+                    `;
+                return;
+            }
+
+            fileListEl.innerHTML = files.map(file => `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-details">
+                                ${translations[currentLanguage].size_label}: ${formatFileSize(file.size)} |
+                                ${translations[currentLanguage].date_label}: ${new Date(file.lastModified).toLocaleString(currentLanguage === 'ru' ? 'ru-RU' : 'en-US')}
+                            </div>
+                        </div>
+                        <div class="file-actions">
+                            <button class="btn" onclick="downloadAndDecrypt('${file.name}')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
+                                </svg>
+                                ${translations[currentLanguage].download_button}
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteFile('${file.name}')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                                </svg>
+                                ${translations[currentLanguage].delete_button}
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+        } catch (error) {
+            console.error('Error loading file list:', error);
+        }
+    }
+
+    async function downloadAndDecrypt(filename) {
+        const password = document.getElementById('decryptPassword').value;
+
+        if (!password) {
+            showStatus('decryptStatus', translations[currentLanguage].enter_decrypt_password, true);
+            return;
+        }
+
+        try {
+            showProgress('decryptProgress', 'decryptProgressBar');
+            updateProgress('decryptProgressBar', 25);
+
+            const response = await fetch(`${API_BASE}/download/${filename}`, {
+                headers: {
+                    'X-API-Token': userApiToken
+                }
+            });
+            if (!response.ok) {
+                throw new Error(translations[currentLanguage].file_not_found);
+            }
+
+            updateProgress('decryptProgressBar', 50);
+            const encryptedBuffer = await response.arrayBuffer();
+
+            updateProgress('decryptProgressBar', 75);
+            const decryptedBuffer = await decryptFile(new Uint8Array(encryptedBuffer), password);
+
+            updateProgress('decryptProgressBar', 100);
+
+            // Download decrypted file
+            const originalName = filename.replace('.encrypted', '');
+            const blob = new Blob([decryptedBuffer]);
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = originalName;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showStatus('decryptStatus', translations[currentLanguage].file_decrypted);
+            document.getElementById('decryptPassword').value = '';
+
+        } catch (error) {
+            showStatus('decryptStatus', translations[currentLanguage].decryption_error + error.message, true);
+        } finally {
+            setTimeout(() => showProgress('decryptProgress', 'decryptProgressBar', false), 1000);
+        }
+    }
+
+    async function deleteFile(filename) {
+        if (!confirm(translations[currentLanguage].confirm_delete)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE}/delete/${filename}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-API-Token': userApiToken
+                }
+            });
+
+            if (response.ok) {
+                loadFileList();
+                showStatus('decryptStatus', translations[currentLanguage].file_deleted);
+            } else {
+                showStatus('decryptStatus', translations[currentLanguage].delete_error, true);
+            }
+        } catch (error) {
+            showStatus('decryptStatus', translations[currentLanguage].delete_error + ': ' + error.message, true);
+        }
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = currentLanguage === 'ru'
+            ? ['Bytes', 'КБ', 'МБ', 'ГБ']
+            : ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Load file list on page load
+    window.addEventListener('load', loadFileList);
+</script>
+</body>
+</html>
